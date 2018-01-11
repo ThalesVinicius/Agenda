@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:schedule id="schedule" value="#{agendaController.eventModel}" widgetVar="myschedule" timeZone="GMT-3" locale="pt">
+
+            <p:ajax event="dateSelect" listener="#{agendaController.newEvent}" update="eventDetalhes" oncomplete="PF('eventDialog').show();"/>
+            <p:ajax event="eventSelect" listener="#{agendaController.OnSelect}" update="eventDetalhes" oncomplete="PF('eventDialog').show();"/>
+            <p:ajax event="eventMove" listener="#{agendaController.Mover}" update="schedule messages"/>
+            <p:ajax event="eventResize" listener="#{agendaController.Aumentar}" update="schedule messages"/>
+
+
+        </p:schedule>
+
+        <p:dialog widgetVar="eventDialog" header="Compromisso" showEffect="clip" hideEffect="clip">
+            <p:outputPanel id="eventDetalhes">
+                <h:panelGrid id="eventDetails" columns="2">
+
+                    <p:outputLabel value="Titulo:" />
+                    <p:inputText id="title" value="#{agendaController.agenda.titulo}" required="true" 
+                                 requiredMessage="É obrigatório preencher o titulo do compromisso."/>
+
+                    <p:outputLabel for="from" value="Inicio:" />
+                    <p:calendar id="from" value="#{agendaController.agenda.dateInicio}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+
+                    <p:outputLabel for="to" value="Termino:" />
+                    <p:calendar id="to" value="#{agendaController.agenda.dateTermino}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+
+                    <p:outputLabel  value="Resolvido:" />
+                    <h:selectBooleanCheckbox id="status" value="#{agendaController.agenda.status}" />
+
+                    <p:outputLabel value="Descricao:" />
+                    <p:inputTextarea id="Descricao" value="#{agendaController.agenda.descricao}" />
+                </h:panelGrid>
+                <br/>
+                <p:separator></p:separator>
+                <p:commandButton id="addButton" value="Salvar"   actionListener="#{agendaController.salvar()}" update="schedule messages" oncomplete="PF('eventDialog').hide();"/>
+                <p:commandButton id="addButtonApagar" value="Apagar" rendered="#{agendaController.controlarInterface()}" actionListener="#{agendaController.excluir()}" update="schedule messages" oncomplete="PF('eventDialog').hide();"/>
+                <br/>
+            </p:outputPanel>
+        </p:dialog>    
+    </h:body>
+</html>
+
